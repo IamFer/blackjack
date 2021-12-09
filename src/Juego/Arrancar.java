@@ -6,15 +6,19 @@ import Cartas.Paquete;
 import java.util.Scanner;
 
 public class Arrancar {
-    public static int numeroCartasJugador = 0;
+    public static int numeroCartas = 0;
 
     public static int puntaje_croupier = 0;
     public static boolean victoria_croupier;
     public static Carta[] cartas_croupier = new Carta[50]; // TODO: Convertir en bidimensional para evaluar AS
 
+    public static boolean blackjack = false;
+
     public static int puntaje_jugador = 0;
     public static boolean victoria_jugador;
     public static Carta[] cartas_jugador = new Carta[50]; // TODO: Convertir en bidimensional para dividir la mano o evaluar AS
+
+    public static int turno = 0;
 
     public static void main(String[] MACF) {
         Paquete.cartas();
@@ -28,7 +32,7 @@ public class Arrancar {
     public static void iniciar_juego() {
         tomar_cartas(2, cartas_croupier);
 
-        numeroCartasJugador = 0; // Total de cartas que tiene el jugador en turno
+        numeroCartas = 0; // Total de cartas que tiene el jugador en turno
 
         tomar_cartas(2, cartas_jugador);
         evaluar_puntaje();
@@ -72,16 +76,36 @@ public class Arrancar {
         limpiar_consola();
         mostrar_mesa();
 
-        for (int i = 0; i < numeroCartasJugador; i++) {
-            puntaje_jugador += cartas_jugador[i].getValor();
+        // Saber el total de As que tiene el jugador para poder calcular dicho valor si tuviera uno o mas
+        int asesJugador = 0;
+
+        // Comienza el conteo de las cartas
+        for (int i = 0; i < numeroCartas; i++) {
+            if(((cartas_jugador[i].getCarta().equals("As")) && (asesJugador == 0)) && (puntaje_jugador + 11 <= 21)) {
+                puntaje_jugador += 11;
+                asesJugador++;
+            } else {
+                puntaje_jugador = puntaje_jugador + cartas_jugador[i].getValor();
+            }
+
+            if((asesJugador == 1) && (puntaje_jugador > 21)) {
+                puntaje_jugador -= 10;
+                asesJugador--;
+            }
         }
 
-        System.out.println("\nValor de tu mano: " + puntaje_jugador);
+        System.out.println("Valor de tu mano: " + puntaje_jugador);
+        turno++;
 
         if(puntaje_jugador < 21) {
             turno_jugador();
         } else if(puntaje_jugador == 21) {
-            System.out.println("\n¡Lograste 21!\n");
+            if(turno == 1) {
+                System.out.println("\n¡¡BLACKJACK!!\n");
+                blackjack = true;
+            } else {
+                System.out.println("\n¡Lograste 21!\n");
+            }
 
             victoria_jugador = true;
             turno_croupier();
@@ -102,26 +126,51 @@ public class Arrancar {
 
     // TURNO CROUPIER: Inicia el juego de la banca
     public static void turno_croupier() {
-        numeroCartasJugador = 2;
+        numeroCartas = 2;
+        turno = 0;
 
         do {
             puntaje_croupier = 0;
             limpiar_consola();
 
-            System.out.println("\nCartas del Croupier: ");
-            mostrar_cartas(cartas_croupier);
 
-            for(int i = 0; i < numeroCartasJugador; i++) {
-                puntaje_croupier += cartas_croupier[i].getValor();
+            System.out.println("=====================");
+            System.out.println("Cartas del Croupier: ");
+            System.out.println("=====================");
+            mostrar_cartas(cartas_croupier);
+            System.out.println("=====================\n");
+
+            // Saber el total de As que tiene el Croupier para poder calcular dicho valor si tuviera uno o mas
+            int asesCroupier = 0;
+
+            // Comienza el conteo de las cartas
+            for(int i = 0; i < numeroCartas; i++) {
+                if(((cartas_croupier[i].getCarta().equals("As")) && (asesCroupier == 0)) && (puntaje_croupier + 11 <= 21)) {
+                    puntaje_croupier += 11;
+                    asesCroupier++;
+                } else {
+                    puntaje_croupier = puntaje_croupier + cartas_croupier[i].getValor();
+                }
+
+                if((asesCroupier == 1) && (puntaje_croupier > 21)) {
+                    puntaje_croupier -= 10;
+                    asesCroupier--;
+                }
             }
 
-            System.out.println("\nValor de la mano del Croupier: " + puntaje_croupier);
-            System.out.println("\nTus Cartas:\n Valor: " + puntaje_jugador);
+            System.out.println("Valor de la mano del Croupier: " + puntaje_croupier);
+            turno++;
 
+            System.out.println("\n=====================");
+            System.out.println("Tus Cartas:\nValor: " + puntaje_jugador);
+            System.out.println("=====================");
             mostrar_cartas(cartas_jugador);
+            System.out.println("=====================");
+
+            // TODO: Tratar de eliminar esas pausas
             pausar(3500);
 
-            System.out.println("Croupier pensando...");
+            System.out.println("\nCroupier pensando...");
             pausar(3500);
 
             if(puntaje_jugador > 21) {
@@ -136,16 +185,27 @@ public class Arrancar {
         if(puntaje_croupier > 21) {
             victoria_croupier = false;
         } else if(puntaje_croupier == 21) {
+            if(turno == 1) {
+                System.out.println("\n¡¡BLACKJACK!!\n");
+
+                if(!(blackjack)) {
+                    victoria_jugador = false;
+                    blackjack = true;
+                }
+            }
+
             victoria_croupier = true;
         }
     }
 
     // DECLARAR VICTORIA: Determina quien gano el juego, y reparte los premios
     public static void declarar_victoria() {
-        if((puntaje_croupier > puntaje_jugador) && (puntaje_croupier <= 21)) {
-            victoria_croupier = true;
-        } else if((puntaje_jugador > puntaje_croupier) && (puntaje_jugador <= 21)) {
+        if((puntaje_jugador <= 21 && puntaje_croupier >= 21) ||
+           ((puntaje_jugador > puntaje_croupier) && (puntaje_jugador <= 21))) {
             victoria_jugador = true;
+        } else if ((puntaje_croupier <= 21 && puntaje_jugador >= 21) ||
+                   ((puntaje_croupier > puntaje_jugador) && (puntaje_croupier <= 21))) {
+            victoria_croupier = true;
         }
 
         if(victoria_croupier) {
@@ -161,19 +221,25 @@ public class Arrancar {
 
     // MESA: Muestra su mesa al Jugador
     public static void mostrar_mesa() {
-        System.out.println("\nCartas del Croupier: ");
+        System.out.println("=====================");
+        System.out.println("Cartas del Croupier: ");
+        System.out.println("=====================");
         System.out.println(cartas_croupier[0]);
         System.out.println("[CARTA OCULTA]");  // Únicamente muestra la primer carta del Croupier
+        System.out.println("=====================\n");
 
-        System.out.println("\nTus Cartas: ");
+        System.out.println("=====================");
+        System.out.println("Tus Cartas: ");
+        System.out.println("=====================");
         mostrar_cartas(cartas_jugador); // Muestra tu mano
+        System.out.println("=====================");
     }
 
     // CARTAS: Muestra las cartas de cada jugador
     public static void mostrar_cartas(Carta[] jugador) {
         for (Carta cartas: jugador) {
             if(cartas != null) {
-                System.out.println(cartas);
+                System.out.println(" - " + cartas);
             } else {
                 return;
             }
@@ -183,8 +249,8 @@ public class Arrancar {
     // TOMAR CARTAS: Reparte las cartas a los jugadores del paquete de cartas
     public static void tomar_cartas(int cuantasCartas, Carta[] jugador) {
         for (int i = 0; i < cuantasCartas; i++) {
-            jugador[numeroCartasJugador] = Paquete.sacar_carta();
-            numeroCartasJugador++;
+            jugador[numeroCartas] = Paquete.sacar_carta();
+            numeroCartas++;
         }
     }
 
