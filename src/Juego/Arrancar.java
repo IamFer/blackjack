@@ -77,7 +77,7 @@ public class Arrancar {
         limpiar_consola();
         mostrar_mesa();
 
-        // Saber el total de As que tiene el jugador para poder calcular dicho valor si tuviera uno o mas
+        // Saber el numero de Ases con valor 11 que tiene el jugador
         int asesJugador = 0;
 
         // Comienza el conteo de las cartas
@@ -89,6 +89,7 @@ public class Arrancar {
                 puntaje_jugador = puntaje_jugador + cartas_jugador[i].getValor();
             }
 
+            // Si hay un As con valor de 11 y ya se llegó al límite, regresarle el valor de 1 a dicho As
             if((asesJugador == 1) && (puntaje_jugador > 21)) {
                 puntaje_jugador -= 10;
                 asesJugador--;
@@ -141,7 +142,7 @@ public class Arrancar {
             mostrar_cartas(cartas_croupier);
             System.out.println("=====================\n");
 
-            // Saber el total de As que tiene el Croupier para poder calcular dicho valor si tuviera uno o mas
+            // Saber el numero de Ases con valor 11 que tiene el Croupier
             int asesCroupier = 0;
 
             // Comienza el conteo de las cartas
@@ -153,6 +154,7 @@ public class Arrancar {
                     puntaje_croupier = puntaje_croupier + cartas_croupier[i].getValor();
                 }
 
+                // Si hay un As con valor de 11 y ya se llegó al límite, regresarle el valor de 1 a dicho As
                 if((asesCroupier == 1) && (puntaje_croupier > 21)) {
                     puntaje_croupier -= 10;
                     asesCroupier--;
