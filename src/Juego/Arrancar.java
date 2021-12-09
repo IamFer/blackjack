@@ -24,6 +24,7 @@ public class Arrancar {
         Paquete.cartas();
 
         // TODO: Una interfaz grafica
+        // TODO: Limpiar un poco el código XD
         iniciar_juego();
         declarar_victoria();
     }
