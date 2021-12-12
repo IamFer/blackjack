@@ -10,13 +10,13 @@ public class Arrancar {
 
     public static int puntaje_croupier = 0;
     public static boolean victoria_croupier;
-    public static Carta[] cartas_croupier = new Carta[50]; // TODO: Convertir en bidimensional para evaluar AS
+    public static Carta[] cartas_croupier = new Carta[50];
 
     public static boolean blackjack = false;
 
     public static int puntaje_jugador = 0;
     public static boolean victoria_jugador;
-    public static Carta[] cartas_jugador = new Carta[50]; // TODO: Convertir en bidimensional para dividir la mano o evaluar AS
+    public static Carta[] cartas_jugador = new Carta[50]; // TODO: Convertir en bidimensional para dividir la mano
 
     public static int turno = 0;
 
@@ -40,7 +40,6 @@ public class Arrancar {
     }
 
     // TURNO JUGADOR: Inicia el juego del jugador
-    // TODO: Evaluar las AS como 1/11
     public static void turno_jugador() {
         Scanner entrada = new Scanner(System.in);
 
