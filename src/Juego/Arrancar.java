@@ -16,7 +16,9 @@ public class Arrancar {
 
     public static int puntaje_jugador = 0;
     public static boolean victoria_jugador;
-    public static Carta[] cartas_jugador = new Carta[50]; // TODO: Convertir en bidimensional para dividir la mano
+
+    // TODO: Convertir en bidimensional para dividir la mano
+    public static Carta[] cartas_jugador = new Carta[50];
 
     public static int turno = 0;
 
