@@ -77,25 +77,5 @@ public class Paquete {
     public static void cartas() {
         abrir_paquete();
         barajar_cartas();
-
-        /*
-        System.out.println("Sacamos 2 cartas: ");
-        repartir_cartas(2);
-
-        System.out.println("\nSacamos 4 cartas: ");
-        repartir_cartas(4);
-
-        System.out.println("\nSacamos 14 cartas: ");
-        repartir_cartas(14);
-
-        System.out.println("\nSacamos 32 cartas: ");
-        repartir_cartas(32);
-
-        System.out.println("\nSacamos 1 carta: ");
-        repartir_cartas(1);
-
-        System.out.println("\nHemos sacado " + CARTAS_REPARTIDAS + " cartas.");
-
-         */
     }
 }

@@ -2,7 +2,6 @@ package Cartas;
 
 public class Carta {
     private int valor;
-
     private final String carta;
     private final String simbolo;
 
