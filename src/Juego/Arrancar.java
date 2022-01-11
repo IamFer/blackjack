@@ -3,24 +3,25 @@ package Juego;
 import Cartas.Carta;
 import Cartas.Paquete;
 
+import javax.swing.*;
 import java.util.Scanner;
 
 public class Arrancar {
+    // Opciones Generales
+    public static boolean blackjack = false;
     public static int numeroCartas = 0;
+    public static int turno = 0;
 
+    // Opciones del Crupier
     public static int puntaje_croupier = 0;
     public static boolean victoria_croupier;
     public static Carta[] cartas_croupier = new Carta[50];
 
-    public static boolean blackjack = false;
-
+    // Opciones del Jugador
+    public static int filaActual = 0;
     public static int puntaje_jugador = 0;
     public static boolean victoria_jugador;
-
-    // TODO: Convertir en bidimensional para dividir la mano
-    public static Carta[] cartas_jugador = new Carta[50];
-
-    public static int turno = 0;
+    public static Carta[][] cartas_jugador = new Carta[3][50];
 
     public static void main(String[] MACF) {
         Paquete.cartas();
@@ -37,7 +38,7 @@ public class Arrancar {
 
         numeroCartas = 0; // Total de cartas que tiene el jugador en turno
 
-        tomar_cartas(2, cartas_jugador);
+        tomar_cartas(2, cartas_jugador[filaActual]);
         evaluar_puntaje();
     }
 
@@ -49,7 +50,10 @@ public class Arrancar {
         //System.out.println("1) Doble");
         System.out.println("2) Pedir");
         System.out.println("3) Plantarse");
-        //System.out.println("4) Dividir");
+
+        if((cartas_jugador[filaActual][0].getCarta().equals(cartas_jugador[filaActual][1].getCarta())) && (filaActual < 3)) {
+            System.out.println("4) Dividir");
+        }
 
         int opcion = entrada.nextInt();
 
@@ -57,7 +61,7 @@ public class Arrancar {
             //case 1 -> doble();
             case 2 -> pedir();
             case 3 -> plantarse();
-            //case 4 -> dividir_juego();
+            case 4 -> dividir_juego();
         }
     }
 
@@ -65,11 +69,15 @@ public class Arrancar {
 
     // PEDIR: Pide una carta más
     public static void pedir() {
-        tomar_cartas(1, cartas_jugador);
+        tomar_cartas(1, cartas_jugador[filaActual]);
         evaluar_puntaje();
     }
 
     // TODO: DIVIDIR: Divide tu mano en 2 o 3 manos mas
+    public static void dividir_juego() {
+        JOptionPane.showMessageDialog(null, "Aun no se ha terminado de programar esto.", "¡Perate' tantito!", JOptionPane.ERROR_MESSAGE);
+        plantarse();
+    }
 
     // EVALUAR PUNTAJE: Calcula el valor de las cartas del jugador, y determina su situación (si continua o no)
     public static void evaluar_puntaje() {
@@ -83,11 +91,11 @@ public class Arrancar {
 
         // Comienza el conteo de las cartas
         for (int i = 0; i < numeroCartas; i++) {
-            if(((cartas_jugador[i].getCarta().equals("As")) && (asesJugador == 0)) && (puntaje_jugador + 11 <= 21)) {
+            if(((cartas_jugador[filaActual][i].getCarta().equals("As")) && (asesJugador == 0)) && (puntaje_jugador + 11 <= 21)) {
                 puntaje_jugador += 11;
                 asesJugador++;
             } else {
-                puntaje_jugador = puntaje_jugador + cartas_jugador[i].getValor();
+                puntaje_jugador = puntaje_jugador + cartas_jugador[filaActual][i].getValor();
             }
 
             // Si hay un As con valor de 11 y ya se llegó al límite, regresarle el valor de 1 a dicho As
@@ -111,17 +119,42 @@ public class Arrancar {
             }
 
             victoria_jugador = true;
-            turno_croupier();
+
+            if(filaActual > 0) {
+                filaActual--;
+
+                pedir();
+                evaluar_puntaje();
+            } else {
+                turno_croupier();
+            }
         } else {
             System.out.println("\n¡Te pasaste!\n");
 
             victoria_jugador = false;
-            turno_croupier();
+
+            if(filaActual > 0) {
+                filaActual--;
+
+                pedir();
+                evaluar_puntaje();
+            } else {
+                turno_croupier();
+            }
         }
     }
 
     // PLANTARSE: Terminar turno del jugador y pasar al turno de la banca
     public static void plantarse() {
+        if(filaActual > 0) {
+            filaActual--;
+
+            pedir();
+            evaluar_puntaje();
+
+            return;
+        }
+
         System.out.println("\n¡Ahora sigue el turno del Croupier!\n");
 
         turno_croupier();
@@ -168,8 +201,17 @@ public class Arrancar {
             System.out.println("\n=====================");
             System.out.println("Tus Cartas:\nValor: " + puntaje_jugador);
             System.out.println("=====================");
-            mostrar_cartas(cartas_jugador);
-            System.out.println("=====================");
+
+            for(int i = 0; i < 3; i++) {
+                System.out.println("=====================");
+                System.out.println("Cartas de Mano " + i);
+                mostrar_cartas(cartas_jugador[i]);
+                System.out.println("=====================");
+
+                if((cartas_jugador[1][0] == null) || (cartas_jugador[2][0] == null)) {
+                    break;
+                }
+            }
 
             // TODO: Tratar de eliminar esas pausas
             pausar(3500);
@@ -235,7 +277,7 @@ public class Arrancar {
         System.out.println("=====================");
         System.out.println("Tus Cartas: ");
         System.out.println("=====================");
-        mostrar_cartas(cartas_jugador); // Muestra tu mano
+        mostrar_cartas(cartas_jugador[filaActual]); // Muestra tu mano
         System.out.println("=====================");
     }
 
