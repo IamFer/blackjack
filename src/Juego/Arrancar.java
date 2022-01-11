@@ -28,6 +28,7 @@ public class Arrancar {
 
         // TODO: Una interfaz grafica
         // TODO: Limpiar un poco el código XD
+        // TODO: Agregar las otras manos al dividir
         iniciar_juego();
         declarar_victoria();
     }
