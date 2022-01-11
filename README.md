@@ -36,6 +36,12 @@ de que se ponga en juego la primera carta.
 
 [Java 17](https://www.java.com/)
 
+
+## TODO
+- Interfaz grafica para hacer el juego mas atractivo para el usuario
+- Dividir mano cuando tenga 2 cartas iguales
+- Sistema de Apuestas
+
 # Capturas del Juego
 
 Proximamente... todavia le faltan las imagenes y colores bonitos. :v
