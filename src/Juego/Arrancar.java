@@ -18,6 +18,7 @@ public class Arrancar {
     public static Carta[] cartas_croupier = new Carta[50];
 
     // Opciones del Jugador
+
     public static int filaActual = 0;
     public static int puntaje_jugador = 0;
     public static boolean victoria_jugador;
@@ -205,7 +206,6 @@ public class Arrancar {
 
             for(int i = 0; i < 3; i++) {
                 System.out.println("=====================");
-                System.out.println("Cartas de Mano " + i);
                 mostrar_cartas(cartas_jugador[i]);
                 System.out.println("=====================");
 
